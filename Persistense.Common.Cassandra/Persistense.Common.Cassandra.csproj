@@ -7,7 +7,16 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Application\Application.csproj" />
       <ProjectReference Include="..\Domain\Domain.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="CassandraCSharpDriver" Version="3.22.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="SchemeInitialiser\" />
     </ItemGroup>
 
 </Project>

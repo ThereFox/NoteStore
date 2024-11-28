@@ -8,8 +8,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Persistense.Serching.Elasti
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "Application\Application.csproj", "{693EAEC2-03FF-4203-A487-505B38B586C6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Persistense.Contents.MongoDB", "Persistense.Contents.MongoDB\Persistense.Contents.MongoDB.csproj", "{FDD643AE-B4D5-4314-A931-25C57B2AA925}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API", "API\API.csproj", "{69B28564-0F0F-46F4-B03A-AF745CAA6117}"
 EndProject
 Global
@@ -34,10 +32,6 @@ Global
 		{693EAEC2-03FF-4203-A487-505B38B586C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{693EAEC2-03FF-4203-A487-505B38B586C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{693EAEC2-03FF-4203-A487-505B38B586C6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FDD643AE-B4D5-4314-A931-25C57B2AA925}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FDD643AE-B4D5-4314-A931-25C57B2AA925}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FDD643AE-B4D5-4314-A931-25C57B2AA925}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FDD643AE-B4D5-4314-A931-25C57B2AA925}.Release|Any CPU.Build.0 = Release|Any CPU
 		{69B28564-0F0F-46F4-B03A-AF745CAA6117}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{69B28564-0F0F-46F4-B03A-AF745CAA6117}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{69B28564-0F0F-46F4-B03A-AF745CAA6117}.Release|Any CPU.ActiveCfg = Release|Any CPU
