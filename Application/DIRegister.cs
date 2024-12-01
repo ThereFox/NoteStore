@@ -1,6 +1,5 @@
 namespace Application;
 
-public class DIRegister
+public static class DIRegister
 {
-    
 }

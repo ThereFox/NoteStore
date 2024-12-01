@@ -4,12 +4,13 @@ namespace NoteStore.Domain.ValueObjects;
 
 public class NoteGroup : ValueObject
 {
+    public static NoteGroup Story => new NoteGroup(-1);
     public static NoteGroup Common => new NoteGroup(0);
     public static NoteGroup Tips => new NoteGroup(1);
     public static NoteGroup Work => new NoteGroup(2);
     public static NoteGroup OwnLife => new NoteGroup(3);
     
-    private static List<NoteGroup> _all = [Common, Tips, Work, OwnLife];
+    private static List<NoteGroup> _all = [Story, Common, Tips, Work, OwnLife];
     
     public int Value { get; private set; }
 

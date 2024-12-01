@@ -19,4 +19,10 @@ public class Note : Entity<Guid>
         Group = group;
         Content = content;
     }
+
+    public static Result<Note> Create(Guid id, NoteOwner owner, NoteGroup group, NoteContent content)
+    {
+        return Result.Success(new Note(id, owner, group, content));
+    }
+    
 }
