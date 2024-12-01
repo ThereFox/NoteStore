@@ -1,7 +1,9 @@
 using Elastic.Clients.Elasticsearch;
 using Elastic.Clients.Elasticsearch.QueryDsl;
+using Persistense.Common.Cassandra.DTOs;
 using Persistense.Common.Cassandra.Interfaces;
 using Persistense.Serching.Elastick.Document;
+using Persistense.Serching.Elastick.Extensions;
 
 namespace Persistense.Serching.Elastick.Stores;
 
@@ -16,7 +18,7 @@ public class DocumentsSearcher : IDocumentSearcher
         _indexName = indexName;
     }
     
-    public async Task<IList<Guid>> GetDocumentWithRelatedText(string text)
+    public async Task<IList<MatchInfo>> GetDocumentWithRelatedText(string text)
     {
 
 
@@ -29,10 +31,10 @@ public class DocumentsSearcher : IDocumentSearcher
 
         if (searchResult.Hits.Count == 0)
         {
-            return new List<Guid>();
+            return new List<MatchInfo>();
         }
         
-        return searchResult.Documents.Select(d => d.Id).ToList();
+        return searchResult.AsMatchInfo();
         
     }
 }

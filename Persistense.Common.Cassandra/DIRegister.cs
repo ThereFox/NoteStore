@@ -1,6 +1,8 @@
+using Application.Interfaces.Stores;
 using Cassandra;
 using Cassandra.Mapping;
 using Microsoft.Extensions.DependencyInjection;
+using Persistense.Common.Cassandra.Store;
 
 namespace Persistense.Common.DI;
 
@@ -47,4 +49,13 @@ public static class DIRegister
 
         return serviceCollection;
     }
+
+    public static IServiceCollection AddNoteStores(this IServiceCollection serviceCollection)
+    {
+        serviceCollection.AddScoped<INoteQueryStore, NoteQueryStore>();
+        serviceCollection.AddScoped<INoteCommandStore, NoteCommandStore>();
+
+        return serviceCollection;
+    }
+    
 }
