@@ -1,6 +1,6 @@
 namespace Application.UseCases;
 
-public class AddNoteUseCase
+public class AddNoteCommandHandler
 {
     
 }

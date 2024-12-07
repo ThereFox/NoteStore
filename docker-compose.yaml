@@ -1,0 +1,21 @@
+services:
+  cassandra:
+    image: cassandra:5.0
+    container_name: cassandra_single
+    ports:
+      - 9042:9042
+    mem_limit: 6G
+
+  elastick:
+    image: elasticsearch:8.16.1
+    environment:
+        - "node.name=es01"
+        - "cluster.name=cluster-ai"
+        - "discovery.type=single-node"
+        - "bootstrap.memory_lock=true"
+        - "xpack.security.enabled=false"
+        - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+        - "TZ=Europe/Rome"
+    ports:
+      - 9200:9200
+    mem_limit: 4G
