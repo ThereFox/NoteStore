@@ -65,9 +65,10 @@ public class CassandraSchemeInitialiser
                 PartitionId int,
                 ContentId Uuid,
                 CreatorId Uuid,
-                CreatorName varchar(255),
+                CreatorName text,
                 Header text,
-                PRIMARY KEY(PartitionId, Id),
+                PRIMARY KEY(PartitionId, Id)
+                );
             "
             );
 

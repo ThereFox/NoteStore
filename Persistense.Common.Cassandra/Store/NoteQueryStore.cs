@@ -17,24 +17,25 @@ public class NoteQueryStore : INoteQueryStore
 
     private readonly ICqlQueryAsyncClient _queryClient;
     
-    public NoteQueryStore(IDocumentSearcher searcher, IDocumentStore store)
+    public NoteQueryStore(ICqlQueryAsyncClient client, IDocumentSearcher searcher, IDocumentStore store)
     {
+        _queryClient = client;
         _searcher = searcher;
         _store = store;
     }
     
-    public async Task<IList<NoteShortInfo>> GetAllByGroup(NoteGroup group, int count)
+    public async Task<IList<NoteShortInfo>> GetNByGroup(NoteGroup group, int count)
     {
         try
         {
             var notes = await _queryClient.FetchAsync<NoteDTO>(
                 @"
                 SELECT Id, PartitionId, ContentId, CreatorId
-                FROM notes
-                WHERE group_id = @group
+                FROM notestore.notes
+                WHERE group_id = ?
                 ORDER BY CreationDate DESC
-                LIMIT @Count
-                ", new { Count = count, group = group.Value }
+                LIMIT ?
+                ", group.Value,count
             );
 
             return notes.ToNoteStortInfoList();
@@ -54,11 +55,10 @@ public class NoteQueryStore : INoteQueryStore
             var ElementFromDB = await _queryClient.FetchAsync<NoteDTO>(
                 @"                
                 SELECT Id, PartitionId, ContentId, CreatorId
-                FROM notes
-                WHERE Id IN @relatedElements
-                ORDER BY CreationDate DESC
+                FROM notestore.notes
+                WHERE Id IN ?
                 ",
-                new { relatedElements = relatedElements }
+                relatedElements
                 );
 
             var result = new System.Collections.Generic.List<NoteMatch>();
@@ -100,16 +100,19 @@ public class NoteQueryStore : INoteQueryStore
             var getElementByIdCQL = new Cql(
                 @"
                     SELECT Id, PartitionId, ContentId, CreatorId
-                    FROM notes
-                    WHERE Id = @id
-                ", new { Id = id });
+                    FROM notestore.notes
+                    WHERE Id = ?
+                ", id);
 
-            var noteById = await _queryClient.FirstOrDefaultAsync<NoteDTO>(getElementByIdCQL);
+            var noteById = (await _queryClient.FetchAsync<NoteDTO>(getElementByIdCQL)).FirstOrDefault();
 
             if (noteById == null)
             {
                 return Result.Failure<Note>("Note not found");
             }
+            
+            noteById.CreatorName ??= "Unknown";
+            noteById.Header ??= "Empty";
             
             var noteContentById = await _store.GetContentByKey(noteById.ContentId);
 

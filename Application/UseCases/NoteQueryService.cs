@@ -17,9 +17,15 @@ public class NoteQueryService
         _queryStore = queryStore;
     }
 
-    public async Task<Result<Note>> GetById(Guid noteId)
+    public async Task<Result<NoteResponseDTO>> GetById(Guid noteId)
     {
-        return await _queryStore.GetById(noteId);
+        var result = await _queryStore.GetById(noteId);
+        if (result.IsFailure)
+        {
+            return Result.Failure<NoteResponseDTO>(result.Error);
+        }
+
+        return result.Value.ToResponseDTO();
     }
     
     public async Task<Result<IList<NoteShortInfo>>> GetByGroup(int groupId)
@@ -47,11 +53,4 @@ public class NoteQueryService
         
         return Result.Success(result);
     }
-
-    public async Task<Result> SaveNew()
-    {
-        
-        _commandStore.AddNote();
-    }
-    
 }

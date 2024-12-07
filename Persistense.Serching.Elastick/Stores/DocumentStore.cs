@@ -24,8 +24,10 @@ public class DocumentStore : IDocumentStore
     {
         var document = await _client
             .GetAsync<NoteContentDocument>(
-                new Id(key),
-                ex => ex.Index(_indexName)
+                new Id(key.ToString()),
+                ex => 
+                    ex.Index(_indexName)
+                        .Id(key.ToString())
             );
 
         if (document.IsValidResponse == false || document.ElasticsearchServerError != null || document.Source == null)
@@ -39,20 +41,29 @@ public class DocumentStore : IDocumentStore
 
     public async Task<Result<Guid>> SaveContent(Note note)
     {
-        var document = note.ToDocument();
-        
-        var indexResult = await _client.IndexAsync(document, 
-            ex => 
-                ex
-                    .Index(_indexName)
-                    .Id(document.Id));
-
-        if (indexResult.IsValidResponse == false || indexResult.Result != Elastic.Clients.Elasticsearch.Result.Created)
+        try
         {
-            return Result.Failure<Guid>("invalid result state");
+            var document = note.ToDocument();
+
+            var indexResult = await _client.IndexAsync(document,
+                ex =>
+                    ex
+                        .Index(_indexName)
+                        .Id(document.Id)    
+                );
+
+            if (indexResult.IsValidResponse == false ||
+                indexResult.Result != Elastic.Clients.Elasticsearch.Result.Created)
+            {
+                return Result.Failure<Guid>("invalid result state");
+            }
+
+
+            return Result.Success(document.Id);
         }
-        
-        
-        return Result.Success(document.Id);
+        catch (Exception e)
+        {
+            return Result.Failure<Guid>(e.Message);
+        }
     }
 }

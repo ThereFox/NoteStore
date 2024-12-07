@@ -13,9 +13,9 @@ public class NoteResponseDTO
     public string Content { get; set; }
 }
 
-public static class ToDTOClass
+public static class ToResponseDTOClass
 {
-    public static NoteResponseDTO ToDTO(this Note note)
+    public static NoteResponseDTO ToResponseDTO(this Note note)
     {
         return new NoteResponseDTO()
         {

@@ -1,6 +1,6 @@
 namespace Application.Commands.Abstraction;
 
-public class ICommand
+public interface ICommand
 {
     
 }

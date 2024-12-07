@@ -3,6 +3,7 @@ using Cassandra;
 using Cassandra.Mapping;
 using Microsoft.Extensions.DependencyInjection;
 using Persistense.Common.Cassandra.Store;
+using Persistense.Common.DI.SchemeInitialiser;
 
 namespace Persistense.Common.DI;
 
@@ -47,6 +48,12 @@ public static class DIRegister
             ex => ex.GetRequiredService<Mapper>()
         );
 
+        var connection = new Mapper(cluster.Connect());
+        
+        var initialiser = new CassandraSchemeInitialiser(connection);
+
+        initialiser.InitializeAsync().Wait();
+        
         return serviceCollection;
     }
 

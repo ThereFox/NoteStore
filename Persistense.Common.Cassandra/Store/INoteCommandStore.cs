@@ -21,17 +21,24 @@ public class NoteCommandStore : INoteCommandStore
     {
         try
         {
+            var saveFileResult = await _documentStore.SaveContent(note);
+
+            if (saveFileResult.IsFailure)
+            {
+                return saveFileResult;
+            }
+
+            var fileId = saveFileResult.Value;
+            
             var cql = new Cql(
                 @$"
 
-                INSERT INTO notes (Id, PartitionId, ...)
-                VALUES (@Id, @PartitionId, @Note);
-                ", new { Id = note.Id, }
+                INSERT INTO noteStore.notes (Id, PartitionId, ContentId, CreatorId, CreatorName, Header)
+                VALUES (?, ?, ?, Uuid(), 'Test', 'Test');
+                ", note.Id, note.Group.Value, fileId
             );
             
             await _writer.ExecuteAsync(cql);
-            
-            await _documentStore.SaveContent(note);
 
             return Result.Success();
         }
