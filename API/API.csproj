@@ -6,4 +6,11 @@
         <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Application\Application.csproj" />
+      <ProjectReference Include="..\Domain\Domain.csproj" />
+      <ProjectReference Include="..\Persistense.Common.Cassandra\Persistense.Common.Cassandra.csproj" />
+      <ProjectReference Include="..\Persistense.Serching.Elastick\Persistense.Serching.Elastick.csproj" />
+    </ItemGroup>
+
 </Project>
