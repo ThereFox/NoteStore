@@ -22,6 +22,7 @@ public class CassandraSchemeInitialiser
             await CreateKeyspace();
             await SwitchKeyspace();
             await CreateNoteTable();
+            await CreateIndexes();
             return Result.Success();
         }
         catch (Exception e)
@@ -54,7 +55,6 @@ public class CassandraSchemeInitialiser
         
         await _client.ExecuteAsync(cql);
     }
-
     private async Task CreateNoteTable()
     {
         var cql = new Cql(
@@ -63,15 +63,29 @@ public class CassandraSchemeInitialiser
                 (
                 Id Uuid,
                 PartitionId int,
+                Version int,
                 ContentId Uuid,
                 CreatorId Uuid,
                 CreatorName text,
                 Header text,
-                PRIMARY KEY(PartitionId, Id)
-                );
+                PRIMARY KEY(PartitionId, Id, Version)
+                )
+                WITH Clustering ORDER BY Id ASC, Version DESC;
             "
             );
 
+        await _client.ExecuteAsync(cql);
+    }
+
+    private async Task CreateIndexes()
+    {
+        var cql = new Cql(
+            @$"
+            CREATE INDEX IF NOT EXISTS IdIndex
+            ON {NoteTableName} (Id);
+            "
+        );
+        
         await _client.ExecuteAsync(cql);
     }
 }
