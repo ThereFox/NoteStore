@@ -33,7 +33,7 @@ public class NoteQueryStore : INoteQueryStore
                 SELECT Id, PartitionId, ContentId, CreatorId
                 FROM notestore.notes
                 WHERE group_id = ?
-                ORDER BY CreationDate DESC
+                ORDER BY Id ASC
                 LIMIT ?
                 ", group.Value,count
             );
@@ -102,6 +102,8 @@ public class NoteQueryStore : INoteQueryStore
                     SELECT Id, PartitionId, ContentId, CreatorId
                     FROM notestore.notes
                     WHERE Id = ?
+                    ORDER BY Version DESC
+                    LIMIT 1
                 ", id);
 
             var noteById = (await _queryClient.FetchAsync<NoteDTO>(getElementByIdCQL)).FirstOrDefault();
