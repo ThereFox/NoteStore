@@ -28,16 +28,27 @@ public class NoteQueryStore : INoteQueryStore
     {
         try
         {
-            var notes = await _queryClient.FetchAsync<NoteDTO>(
+            var cql = new Cql(
                 @"
-                SELECT Id, PartitionId, ContentId, CreatorId
+                SELECT Id, PartitionId, ContentId, CreatorId, CreatorName, Header
                 FROM notestore.notes
-                WHERE group_id = ?
+                WHERE PartitionId = ?
                 ORDER BY Id ASC
                 LIMIT ?
-                ", group.Value,count
+                ", group.Value, count);
+            
+            
+            var notesFetch = await _queryClient.FetchAsync<NoteDTO>(
+                cql
             );
 
+            var notes = notesFetch.ToList();
+            
+            if (notes is null || notes.Any() == false)
+            {
+                return [];
+            }
+            
             return notes.ToNoteStortInfoList();
         }
         catch (Exception ex)
@@ -52,13 +63,18 @@ public class NoteQueryStore : INoteQueryStore
         {
             var relatedElements = await _searcher.GetDocumentWithRelatedText(relatedText);
 
+            if (relatedElements is null || relatedElements.Any() == false)
+            {
+                return [];
+            }
+            
             var ElementFromDB = await _queryClient.FetchAsync<NoteDTO>(
                 @"                
-                SELECT Id, PartitionId, ContentId, CreatorId
+                SELECT Id, PartitionId, ContentId, CreatorId, CreatorName, Header
                 FROM notestore.notes
-                WHERE Id IN ?
+                WHERE PartitionId > -1 AND Id IN ?
                 ",
-                relatedElements
+                relatedElements.Select(ex => ex.ElementId)
                 );
 
             var result = new System.Collections.Generic.List<NoteMatch>();
@@ -99,10 +115,9 @@ public class NoteQueryStore : INoteQueryStore
         {
             var getElementByIdCQL = new Cql(
                 @"
-                    SELECT Id, PartitionId, ContentId, CreatorId
+                    SELECT Id, PartitionId, ContentId, CreatorId, CreatorName, Header
                     FROM notestore.notes
                     WHERE Id = ?
-                    ORDER BY Version DESC
                     LIMIT 1
                 ", id);
 

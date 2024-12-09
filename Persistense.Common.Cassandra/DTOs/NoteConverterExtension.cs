@@ -19,9 +19,9 @@ public static class NoteConverterExtension
         return new NoteShortInfo(note.Id, validateNoteGroup.Value, note.CreatorName, note.Header);
     }
 
-    public static IList<NoteShortInfo> ToNoteStortInfoList(this IEnumerable<NoteDTO> notes)
+    public static IList<NoteShortInfo> ToNoteStortInfoList(this IList<NoteDTO> notes)
     {
-        if (notes is null || notes.Count() == 0)
+        if (notes is null || notes.Any() == false)
         {
             return [];
         }
