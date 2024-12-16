@@ -10,7 +10,7 @@ public static class AsMatchInfoExtension
         var list = new List<MatchInfo>();
         foreach (var hits in result.Hits)
         {
-            var hit = new MatchInfo(Guid.Parse(hits.Id), "");
+            var hit = new MatchInfo(Guid.Parse(hits.Id), hits.Highlight.Values.First().First());
             list.Add(hit);
         }
         

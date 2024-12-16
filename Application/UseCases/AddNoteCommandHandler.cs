@@ -32,7 +32,7 @@ public class AddNoteCommandHandler : ICommandHandler<CreateNoteCommand>
             return validateOwner;
         }
         
-        var validateNote = Note.Create(Guid.NewGuid(), validateOwner.Value, command.group, validateContent.Value);
+        var validateNote = Note.Create(command.Id, validateOwner.Value, command.group, validateContent.Value);
 
         if (validateNote.IsFailure)
         {

@@ -1,4 +1,5 @@
 using Elastic.Clients.Elasticsearch;
+using Elastic.Clients.Elasticsearch.Core.Search;
 using Elastic.Clients.Elasticsearch.QueryDsl;
 using Persistense.Common.Cassandra.DTOs;
 using Persistense.Common.Cassandra.Interfaces;
@@ -26,7 +27,34 @@ public class DocumentsSearcher : IDocumentSearcher
             ex => ex.Index(_indexName)
                 .From(0)
                 .Size(15)
-                .Query(query => query.Term(term => term.Field(field => field.Content).Value(text)))
+                .Highlight(subEx => subEx
+                    .HighlightQuery( query =>
+                        query.Match(
+                                term => term.Field(
+                                        field => field.Content
+                                    )
+                                    .Query(text)))
+                    
+                    .Fields(ex => ex.Add(
+                        new Field("content"), 
+                        descriptor => 
+                            descriptor
+                                .Type(HighlighterType.Plain)
+                                .Fragmenter(HighlighterFragmenter.Span)
+                                .PreTags(["<span>"])
+                                .PostTags(["</span>"])
+                                .FragmentSize(150)
+                                .NoMatchSize(150)
+                                .NumberOfFragments(1)
+                        ))
+                    )
+                .Query(
+                    query => 
+                        query.Match(
+                            term => term.Field(
+                                field => field.Content
+                                )
+                                .Query(text)))
         );
 
         if (searchResult.Hits.Count == 0)

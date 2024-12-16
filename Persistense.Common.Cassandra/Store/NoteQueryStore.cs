@@ -68,34 +68,40 @@ public class NoteQueryStore : INoteQueryStore
                 return [];
             }
             
-            var ElementFromDB = await _queryClient.FetchAsync<NoteDTO>(
+            var ElementFromDB = (await _queryClient.FetchAsync<NoteDTO>(
                 @"                
                 SELECT Id, PartitionId, ContentId, CreatorId, CreatorName, Header
                 FROM notestore.notes
                 WHERE PartitionId > -1 AND Id IN ?
+                ALLOW FILTERING
                 ",
                 relatedElements.Select(ex => ex.ElementId)
-                );
+                )).ToList();
 
+            if (ElementFromDB.Any() == false)
+            {
+                return [];
+            }
+            
             var result = new System.Collections.Generic.List<NoteMatch>();
             
-            foreach (var element in relatedElements)
+            foreach (var element in ElementFromDB)
             {
-                var noteById = ElementFromDB.First(ex => ex.ContentId == element.ElementId);
-
-                if (noteById == null)
+                var contentById = relatedElements.FirstOrDefault(ex => ex.ElementId == element.Id);
+                
+                if (contentById == null)
                 {
                     continue;
                 }
 
-                var validateInfo = noteById.ToNoteShortInfo();
+                var validateInfo = element.ToNoteShortInfo();
 
                 if (validateInfo.IsFailure)
                 {
                     continue;
                 }
                 
-                var match = new NoteMatch(validateInfo.Value, element.MatchedText);
+                var match = new NoteMatch(validateInfo.Value, contentById.MatchedText);
                 
                 result.Add(match);
             }

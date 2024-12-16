@@ -36,7 +36,7 @@ public class NoteCommandStore : INoteCommandStore
                 @$"
 
                 INSERT INTO noteStore.notes (Id, Version, PartitionId, ContentId, CreatorId, CreatorName, Header)
-                VALUES (?, ?, ?, ?, ?, ?);
+                VALUES (?, ?, ?, ?, ?, ?, ?);
                 ", note.Id, 1, note.Group.Value, fileId, note.Owner.Id, note.Owner.Name, note.Content.Title
             );
             

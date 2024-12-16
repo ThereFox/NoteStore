@@ -32,6 +32,7 @@ public class NoteController : Controller
             
         var command = new CreateNoteCommand()
         {
+            Id = Guid.NewGuid(),
             group = validateType.Value,
             Content = request.content,
             Descriprion = request.description,
@@ -40,7 +41,7 @@ public class NoteController : Controller
         
         var handlerResult = await _createNoteCommandHandler.Handle(command);
 
-        return Ok(handlerResult.IsSuccess);
+        return Ok(command.Id);
     }
 
     

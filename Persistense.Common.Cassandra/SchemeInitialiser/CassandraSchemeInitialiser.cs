@@ -69,8 +69,7 @@ public class CassandraSchemeInitialiser
                 CreatorName text,
                 Header text,
                 PRIMARY KEY(PartitionId, Id, Version)
-                )
-                WITH Clustering ORDER BY Id ASC, Version DESC;
+                );
             "
             );
 
